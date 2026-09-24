@@ -13,15 +13,21 @@
   Recordatorio: se pueden añadir clases y contenedores, pero NO cambiar los id,
   porque app.js los usa para encontrar las cosas.
 -->
-<body class="min-h-screen bg-slate-100 text-slate-800">
+<!-- bg-linear-to-b = fondo en degradado de arriba (from) hacia abajo (to), bien suavecito -->
+<body class="min-h-screen bg-linear-to-b from-indigo-50 to-slate-100 text-slate-800">
 
-  <!-- Encabezado: franja azul arriba con el nombre de la app -->
-  <header class="bg-blue-700 text-white shadow">
+  <!-- Encabezado: degradado de izquierda a derecha (bg-linear-to-r) de índigo a violeta -->
+  <header class="bg-linear-to-r from-indigo-600 to-violet-600 text-white shadow-lg">
     <!-- max-w + mx-auto = centrar el contenido y que no se estire infinito en pantallas gigantes -->
-    <div class="mx-auto max-w-7xl px-4 py-6">
-      <!-- ojo: Tailwind le quita el tamaño al h1, por eso toca ponérselo a mano con text-3xl -->
-      <h1 class="text-2xl font-bold sm:text-3xl">Mesa de ayuda</h1>
-      <p class="text-blue-100">Tickets de soporte de la oficina</p>
+    <div class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-6">
+      <!-- el cuadrito blanco transparente con el emoji, tipo "logo" -->
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 text-2xl">🛠️</div>
+      <div>
+        <!-- ojo: Tailwind le quita el tamaño al h1, por eso toca ponérselo a mano con text-3xl -->
+        <h1 class="text-2xl font-extrabold tracking-tight sm:text-3xl">Mesa de ayuda</h1>
+        <!-- text-indigo-100 = blanco medio azulado, para que el subtítulo resalte menos -->
+        <p class="text-sm text-indigo-100">Tickets de soporte de la oficina</p>
+      </div>
     </div>
   </header>
 
@@ -31,12 +37,15 @@
     - "lg:grid-cols-3" = desde 1024px se parte en 3 columnas.
       El form usa 1 y el tablero usa 2 (lg:col-span-2), o sea el tablero queda más grande.
   -->
-  <main class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-3">
+  <main class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-8 lg:grid-cols-3">
 
     <!-- Formulario: crea tickets y, desde el nivel 4, también los edita -->
-    <!-- lg:self-start = que la cajita del form no se estire hasta abajo cuando el tablero es largo -->
-    <section class="rounded-xl bg-white p-5 shadow lg:self-start">
-      <h2 id="titulo-formulario" class="mb-4 text-xl font-semibold">Nuevo ticket</h2>
+    <!-- lg:sticky top-6 = en pantalla grande el form se queda quieto cuando bajas por los tickets (bonus chévere) -->
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:sticky lg:top-6 lg:self-start">
+      <div class="mb-5 border-b border-slate-100 pb-4">
+        <h2 id="titulo-formulario" class="text-xl font-bold text-slate-900">Nuevo ticket</h2>
+        <p class="text-sm text-slate-500">Cuéntanos qué está fallando ✍️</p>
+      </div>
 
       <!-- flex-col + gap = todo uno debajo del otro con espacio entre medio -->
       <form id="form-ticket" novalidate class="flex flex-col gap-4">
@@ -44,33 +53,35 @@
         <!-- cada campo va en su propio div para que la etiqueta quede encima -->
         <div>
           <!-- "block" hace que el label ocupe su renglón y el input baje -->
-          <label for="titulo" class="mb-1 block text-sm font-medium">Título</label>
-          <!-- w-full = todo el ancho. focus:ring = el borde azulito cuando le das clic -->
-          <input id="titulo" name="titulo" type="text"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <label for="titulo" class="mb-1 block text-sm font-semibold text-slate-700">Título</label>
+          <!--
+            w-full = todo el ancho. bg-slate-50 = gris clarito, y al darle clic (focus:)
+            se pone blanco con un "halo" morado (ring-4). transition = que el cambio sea suave
+          -->
+          <input id="titulo" name="titulo" type="text" placeholder="Ej: la impresora no imprime"
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100">
           <!-- aquí sale el error en rojo (el texto lo pone el JS en el nivel 2) -->
-          <p id="error-titulo" class="mt-1 text-sm text-red-600"></p>
+          <p id="error-titulo" class="mt-1 text-sm font-medium text-red-600"></p>
         </div>
 
         <div>
-          <label for="descripcion" class="mb-1 block text-sm font-medium">Descripción</label>
-          <textarea id="descripcion" name="descripcion" rows="3"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
+          <label for="descripcion" class="mb-1 block text-sm font-semibold text-slate-700">Descripción</label>
+          <textarea id="descripcion" name="descripcion" rows="3" placeholder="Detalles del problema"
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100"></textarea>
         </div>
 
         <div>
-          <label for="solicitante" class="mb-1 block text-sm font-medium">Solicitante</label>
-          <input id="solicitante" name="solicitante" type="text"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
-          <p id="error-solicitante" class="mt-1 text-sm text-red-600"></p>
+          <label for="solicitante" class="mb-1 block text-sm font-semibold text-slate-700">Solicitante</label>
+          <input id="solicitante" name="solicitante" type="text" placeholder="¿Quién lo reporta?"
+            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100">
+          <p id="error-solicitante" class="mt-1 text-sm font-medium text-red-600"></p>
         </div>
 
         <!-- categoría y prioridad lado a lado desde sm, en el cel una encima de otra -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label for="categoria" class="mb-1 block text-sm font-medium">Categoría</label>
-            <select id="categoria" name="categoria"
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <label for="categoria" class="mb-1 block text-sm font-semibold text-slate-700">Categoría</label>
+            <select id="categoria" name="categoria" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100">
               <option value="hardware">Hardware</option>
               <option value="software">Software</option>
               <option value="red">Red</option>
@@ -79,9 +90,8 @@
           </div>
 
           <div>
-            <label for="prioridad" class="mb-1 block text-sm font-medium">Prioridad</label>
-            <select id="prioridad" name="prioridad"
-              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <label for="prioridad" class="mb-1 block text-sm font-semibold text-slate-700">Prioridad</label>
+            <select id="prioridad" name="prioridad" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100">
               <option value="baja">Baja</option>
               <option value="media" selected>Media</option>
               <option value="alta">Alta</option>
@@ -89,33 +99,40 @@
           </div>
         </div>
 
-        <!-- los botones: hover: = cambian de color cuando pasas el mouse por encima -->
-        <div class="flex flex-col gap-2 sm:flex-row">
+        <!--
+          Los botones: hover: = cambian cuando pasas el mouse por encima.
+          hover:-translate-y-0.5 = se suben un pelito, y active:scale-95 = se "hunden" al hacer clic
+        -->
+        <div class="mt-2 flex flex-col gap-2 sm:flex-row">
           <button id="btn-guardar" type="submit"
-            class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">Crear ticket</button>
+            class="flex-1 cursor-pointer rounded-xl bg-indigo-600 px-4 py-2.5 font-semibold text-white shadow-md shadow-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-700 active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-200">Crear ticket</button>
           <!-- este empieza escondido (hidden), el JS lo muestra en el nivel 4 -->
           <button id="btn-cancelar" type="button"
-            class="rounded-lg bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-300" hidden>Cancelar edición</button>
+            class="flex-1 cursor-pointer rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold text-slate-600 transition hover:bg-slate-100 active:scale-95 focus:outline-none focus:ring-4 focus:ring-slate-200" hidden>Cancelar edición</button>
         </div>
       </form>
     </section>
 
     <!-- Tablero: col-span-2 = en pantalla grande ocupa 2 de las 3 columnas -->
-    <section class="rounded-xl bg-white p-5 shadow lg:col-span-2">
-      <h2 class="mb-4 text-xl font-semibold">Tickets</h2>
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+      <div class="mb-5 border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-bold text-slate-900">Tickets</h2>
+        <p class="text-sm text-slate-500">Todo lo que ha reportado la oficina 📋</p>
+      </div>
 
-      <!-- aquí el JS escribe el conteo por estado (nivel 6). Queda como cajita gris -->
-      <div id="resumen" class="mb-4 text-sm text-slate-600"></div>
+      <!-- aquí el JS escribe el conteo por estado (nivel 6). Queda como una cajita morada clarita -->
+      <div id="resumen" class="mb-5 rounded-xl bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-900 empty:hidden"></div>
+      <!-- ^ empty:hidden = si el div está vacío, se esconde solito (así no sale una caja vacía fea) -->
 
       <!--
         Filtros: en el cel uno debajo del otro (flex-col),
         desde md (768px) en una sola fila (md:flex-row). Eso pide el enunciado.
+        Van dentro de una cajita gris para que se vean como "barra de filtros"
       -->
-      <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-end">
-        <div class="md:w-48">
-          <label for="filtro-estado" class="mb-1 block text-sm font-medium">Estado</label>
-          <select id="filtro-estado"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+      <div class="mb-5 flex flex-col gap-4 rounded-xl bg-slate-50 p-4 md:flex-row md:items-end">
+        <div class="md:w-52">
+          <label for="filtro-estado" class="mb-1 block text-sm font-semibold text-slate-700">Estado</label>
+          <select id="filtro-estado" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 h-11 bg-white">
             <option value="todos">Todos</option>
             <option value="abierto">Abiertos</option>
             <option value="en_progreso">En progreso</option>
@@ -123,16 +140,18 @@
           </select>
         </div>
 
-        <!-- flex-1 = la búsqueda se come todo el espacio que sobre en la fila -->
+        <!-- flex-1 = la búsqueda se come todo el espacio que sobre en la fila. h-11 (en los dos) = misma altura para que queden parejitos -->
         <div class="flex-1">
-          <label for="busqueda" class="mb-1 block text-sm font-medium">Buscar</label>
-          <input id="busqueda" type="search" placeholder="Buscar por título"
-            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <label for="busqueda" class="mb-1 block text-sm font-semibold text-slate-700">Buscar</label>
+          <input id="busqueda" type="search" placeholder="🔍 Buscar por título" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-100 h-11 bg-white">
         </div>
       </div>
 
-      <!-- mensaje de cargando / error / vacío. Centradito y en gris -->
-      <p id="mensaje" class="py-6 text-center text-slate-500"></p>
+      <!--
+        Mensaje de cargando / error / vacío: cajita con borde punteado (border-dashed), centrado y gris.
+        empty:hidden = si no tiene texto no se ve
+      -->
+      <p id="mensaje" class="mb-5 rounded-xl border-2 border-dashed border-slate-200 py-8 text-center text-slate-500 empty:hidden"></p>
 
       <!--
         Aquí van las tarjetas. Antes decía "gird" (mal escrito, por eso no hacía nada jaja).
@@ -142,6 +161,10 @@
     </section>
 
   </main>
+
+  <!-- piecito de página, porque se ve más pro -->
+  <footer class="pb-8 text-center text-xs text-slate-400">Mesa de ayuda · hecho con HTML, Tailwind y JS</footer>
+
   <script>
     const url = 'http://localhost:3000/tickets';
     const listaTickets = document.querySelector('#lista-tickets');
