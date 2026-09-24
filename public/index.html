@@ -9,78 +9,136 @@
   <script src="app.js" defer></script>
 </head>
 <!--
-  Esta página todavía no tiene ninguna clase de Tailwind, por eso se ve
-  tan plana. Darle forma es el nivel 0 del enunciado.
-  Puedes añadir clases y contenedores, pero no cambies los id: app.js
-  depende de ellos.
+  Nivel 0 hecho: ya tiene clases de Tailwind (nada de CSS propio ni style="").
+  Recordatorio: se pueden añadir clases y contenedores, pero NO cambiar los id,
+  porque app.js los usa para encontrar las cosas.
 -->
-<body>
+<body class="min-h-screen bg-slate-100 text-slate-800">
 
-  <header class="flex flex-col justify-center items-center bg-blue-300">
-    <h1>Mesa de ayuda</h1>
-    <p>Tickets de soporte de la oficina</p>
+  <!-- Encabezado: franja azul arriba con el nombre de la app -->
+  <header class="bg-blue-700 text-white shadow">
+    <!-- max-w + mx-auto = centrar el contenido y que no se estire infinito en pantallas gigantes -->
+    <div class="mx-auto max-w-7xl px-4 py-6">
+      <!-- ojo: Tailwind le quita el tamaño al h1, por eso toca ponérselo a mano con text-3xl -->
+      <h1 class="text-2xl font-bold sm:text-3xl">Mesa de ayuda</h1>
+      <p class="text-blue-100">Tickets de soporte de la oficina</p>
+    </div>
   </header>
 
-  <main class="flex flex-col lg:flex-row gap-50 justify-start">
+  <!--
+    El truco del nivel 0:
+    - "grid" sin prefijo = una sola columna (celular). Primero sale el form y luego el tablero.
+    - "lg:grid-cols-3" = desde 1024px se parte en 3 columnas.
+      El form usa 1 y el tablero usa 2 (lg:col-span-2), o sea el tablero queda más grande.
+  -->
+  <main class="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-6 lg:grid-cols-3">
 
     <!-- Formulario: crea tickets y, desde el nivel 4, también los edita -->
-    <section class="flex-1">
-      <h2 id="titulo-formulario">Nuevo ticket</h2>
+    <!-- lg:self-start = que la cajita del form no se estire hasta abajo cuando el tablero es largo -->
+    <section class="rounded-xl bg-white p-5 shadow lg:self-start">
+      <h2 id="titulo-formulario" class="mb-4 text-xl font-semibold">Nuevo ticket</h2>
 
-      <form id="form-ticket" novalidate class="flex flex-col">
-        <label for="titulo">Título</label>
-        <input class="flex-1" id="titulo" name="titulo" type="text">
-        <p id="error-titulo"></p>
+      <!-- flex-col + gap = todo uno debajo del otro con espacio entre medio -->
+      <form id="form-ticket" novalidate class="flex flex-col gap-4">
 
-        <label for="descripcion">Descripción</label>
-        <textarea class="flex-1" id="descripcion" name="descripcion" rows="3"></textarea>
+        <!-- cada campo va en su propio div para que la etiqueta quede encima -->
+        <div>
+          <!-- "block" hace que el label ocupe su renglón y el input baje -->
+          <label for="titulo" class="mb-1 block text-sm font-medium">Título</label>
+          <!-- w-full = todo el ancho. focus:ring = el borde azulito cuando le das clic -->
+          <input id="titulo" name="titulo" type="text"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <!-- aquí sale el error en rojo (el texto lo pone el JS en el nivel 2) -->
+          <p id="error-titulo" class="mt-1 text-sm text-red-600"></p>
+        </div>
 
-        <label for="solicitante">Solicitante</label>
-        <input id="solicitante" name="solicitante" type="text">
-        <p id="error-solicitante"></p>
+        <div>
+          <label for="descripcion" class="mb-1 block text-sm font-medium">Descripción</label>
+          <textarea id="descripcion" name="descripcion" rows="3"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"></textarea>
+        </div>
 
-        <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria">
-          <option value="hardware">Hardware</option>
-          <option value="software">Software</option>
-          <option value="red">Red</option>
-          <option value="accesos">Accesos</option>
-        </select>
+        <div>
+          <label for="solicitante" class="mb-1 block text-sm font-medium">Solicitante</label>
+          <input id="solicitante" name="solicitante" type="text"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+          <p id="error-solicitante" class="mt-1 text-sm text-red-600"></p>
+        </div>
 
-        <label for="prioridad">Prioridad</label>
-        <select id="prioridad" name="prioridad">
-          <option value="baja">Baja</option>
-          <option value="media" selected>Media</option>
-          <option value="alta">Alta</option>
-        </select>
+        <!-- categoría y prioridad lado a lado desde sm, en el cel una encima de otra -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="categoria" class="mb-1 block text-sm font-medium">Categoría</label>
+            <select id="categoria" name="categoria"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+              <option value="hardware">Hardware</option>
+              <option value="software">Software</option>
+              <option value="red">Red</option>
+              <option value="accesos">Accesos</option>
+            </select>
+          </div>
 
-        <button id="btn-guardar" type="submit" class="rounded bg-gray-300 self-center hover:bg-gray-400 px-2 py-1">Crear ticket</button>
-        <button id="btn-cancelar" type="button" class="rounded bg-gray-300 self-center hover:bg-gray-400 px-2 py-1" hidden>Cancelar edición</button>
+          <div>
+            <label for="prioridad" class="mb-1 block text-sm font-medium">Prioridad</label>
+            <select id="prioridad" name="prioridad"
+              class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+              <option value="baja">Baja</option>
+              <option value="media" selected>Media</option>
+              <option value="alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- los botones: hover: = cambian de color cuando pasas el mouse por encima -->
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <button id="btn-guardar" type="submit"
+            class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">Crear ticket</button>
+          <!-- este empieza escondido (hidden), el JS lo muestra en el nivel 4 -->
+          <button id="btn-cancelar" type="button"
+            class="rounded-lg bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-300" hidden>Cancelar edición</button>
+        </div>
       </form>
     </section>
 
-    <!-- Tablero -->
-    <section class="flex-1">
-      <h2>Tickets</h2>
+    <!-- Tablero: col-span-2 = en pantalla grande ocupa 2 de las 3 columnas -->
+    <section class="rounded-xl bg-white p-5 shadow lg:col-span-2">
+      <h2 class="mb-4 text-xl font-semibold">Tickets</h2>
 
-      <div id="resumen"></div>
+      <!-- aquí el JS escribe el conteo por estado (nivel 6). Queda como cajita gris -->
+      <div id="resumen" class="mb-4 text-sm text-slate-600"></div>
 
-      <div>
-        <label for="filtro-estado">Estado</label>
-        <select id="filtro-estado">
-          <option value="todos">Todos</option>
-          <option value="abierto">Abiertos</option>
-          <option value="en_progreso">En progreso</option>
-          <option value="resuelto">Resueltos</option>
-        </select>
+      <!--
+        Filtros: en el cel uno debajo del otro (flex-col),
+        desde md (768px) en una sola fila (md:flex-row). Eso pide el enunciado.
+      -->
+      <div class="mb-4 flex flex-col gap-4 md:flex-row md:items-end">
+        <div class="md:w-48">
+          <label for="filtro-estado" class="mb-1 block text-sm font-medium">Estado</label>
+          <select id="filtro-estado"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            <option value="todos">Todos</option>
+            <option value="abierto">Abiertos</option>
+            <option value="en_progreso">En progreso</option>
+            <option value="resuelto">Resueltos</option>
+          </select>
+        </div>
 
-        <label for="busqueda">Buscar</label>
-        <input id="busqueda" type="search" placeholder="Buscar por título">
+        <!-- flex-1 = la búsqueda se come todo el espacio que sobre en la fila -->
+        <div class="flex-1">
+          <label for="busqueda" class="mb-1 block text-sm font-medium">Buscar</label>
+          <input id="busqueda" type="search" placeholder="Buscar por título"
+            class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300">
+        </div>
       </div>
 
-      <p id="mensaje"></p>
+      <!-- mensaje de cargando / error / vacío. Centradito y en gris -->
+      <p id="mensaje" class="py-6 text-center text-slate-500"></p>
 
-      <div id="lista-tickets" class="gird gird-cols-1 lg:gird-cols-2 gap-4"></div>
+      <!--
+        Aquí van las tarjetas. Antes decía "gird" (mal escrito, por eso no hacía nada jaja).
+        Una columna en el cel y dos desde md, como pide el nivel 1.
+      -->
+      <div id="lista-tickets" class="grid grid-cols-1 gap-4 md:grid-cols-2"></div>
     </section>
 
   </main>
